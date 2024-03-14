@@ -2,7 +2,6 @@
 #include <cmath>
 #include <utility>
 #include <stdlib.h>
-#include <GLFW/glfw3.h>
 
 double PerlinNoise::generateSample(int x, int y)
 {
