@@ -28,4 +28,11 @@ find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIR})
 link_libraries(${OPENGL_LIBRARIES})
 
+
 add_executable(${EXEC} ${SOURCES})
+
+# Copy the resource directory to binary directory
+add_custom_command(TARGET ${EXEC} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_CURRENT_SOURCE_DIR}/res"
+        $<TARGET_FILE_DIR:${EXEC}>/res)
