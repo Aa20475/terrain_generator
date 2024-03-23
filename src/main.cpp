@@ -106,6 +106,8 @@ int main(void)
 
     glfwMakeContextCurrent(window);
 
+    glfwSwapInterval(1); // Enable VSync
+
     if (glewInit() != GLEW_OK) {
         std::cerr << "Failed to initialize GLEW" << std::endl;
         glfwTerminate();
@@ -142,15 +144,28 @@ int main(void)
 
     ShaderProgramSource source = parseShader("res/shaders/basic.shader");
     unsigned int shader = createShader(source.vertexSource, source.fragmentSource);
+    
+    GLCall(glUseProgram(shader)); // Bind the shader
 
+    GLCall(int uniform_location = glGetUniformLocation(shader, "u_Color")); // Get the location of the color uniform
+    ASSERT(uniform_location != -1);
 
+    float r = 0.0f;
+    float increment = 0.05f;
     while (!glfwWindowShouldClose(window))
     {
         glClear(GL_COLOR_BUFFER_BIT);
 
-        GLCall(glUseProgram(shader)); // Bind the shader
+        GLCall(glUniform4f(uniform_location, r, 0.3f, 0.8f, 1.0f)); // Set the color uniform
+        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT , nullptr)); // Draw the triangle
 
-        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_INT , nullptr)); // Draw the triangle
+        if(r>1.0f){
+            increment = -0.05f;
+        }else if (r<0.0f){
+            increment = 0.05f;
+        }
+
+        r+=increment;
         
         glfwSwapBuffers(window);
         glfwPollEvents();
