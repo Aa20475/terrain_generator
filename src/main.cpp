@@ -14,6 +14,9 @@
 #include "shader.h"
 #include "texture.h"
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
 int main(void)
 {
     GLFWwindow *window;
@@ -69,12 +72,16 @@ int main(void)
         va.addBuffer(vb,layout);
 
         IndexBuffer ib(indices, 6);
+
+        glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+
         Shader shader("res/shaders/texture.shader");
+        shader.bind();
+        shader.setUniform1i("u_Texture", 0);
+        shader.setUniformMat4f("u_MVP", proj);
 
         Texture texture("res/textures/pikachu.png");
         texture.bind();
-        shader.bind();
-        shader.setUniform1i("u_Texture", 0);
 
         va.unbind();
         shader.unbind();
@@ -90,7 +97,6 @@ int main(void)
             renderer.clear();
 
             shader.bind();
-            shader.setUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f); // Set the color uniform
             renderer.draw(va, ib, shader);
 
             if (r > 1.0f)

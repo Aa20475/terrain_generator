@@ -8,6 +8,7 @@ set(DEPENDENCY_PATH ${CMAKE_CURRENT_SOURCE_DIR}/deps)
 set(VENDOR_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/vendor)
 
 include_directories(include)
+include_directories(${VENDOR_PATH})
 
 file(GLOB SOURCES src/*.cpp)
 list(APPEND SOURCES ${VENDOR_PATH}/stb_image/stb_image.cpp)
