@@ -5,10 +5,14 @@ project(terrain-generator)
 set(EXEC generator)
 set(CMAKE_CXX_STANDARD 11)
 set(DEPENDENCY_PATH ${CMAKE_CURRENT_SOURCE_DIR}/deps)
+set(VENDOR_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/vendor)
 
 include_directories(include)
 
 file(GLOB SOURCES src/*.cpp)
+list(APPEND SOURCES ${VENDOR_PATH}/stb_image/stb_image.cpp)
+
+message(${SOURCES})
 
 # GLFW3
 include_directories(${DEPENDENCY_PATH}/GLFW/include)
@@ -27,7 +31,6 @@ add_definitions(-DGLEW_STATIC)
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIR})
 link_libraries(${OPENGL_LIBRARIES})
-
 
 add_executable(${EXEC} ${SOURCES})
 
