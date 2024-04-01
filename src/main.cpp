@@ -16,6 +16,9 @@
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_opengl3.h"
+#include "imgui/imgui_impl_glfw.h"
 
 int main(void)
 {
@@ -75,14 +78,11 @@ int main(void)
 
         glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
         glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100,0,0));
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(200,200,0));
-
-        glm::mat4 mvp = proj * view * model;
+        
 
         Shader shader("res/shaders/texture.shader");
         shader.bind();
         shader.setUniform1i("u_Texture", 0);
-        shader.setUniformMat4f("u_MVP", mvp);
 
         Texture texture("res/textures/pikachu.png");
         texture.bind();
@@ -93,14 +93,37 @@ int main(void)
         ib.unbind();
 
         Renderer renderer;
+
+        ImGui::CreateContext();
+        ImGui_ImplGlfw_InitForOpenGL(window, true);
+        ImGui::StyleColorsDark();
+        ImGuiIO& io = ImGui::GetIO(); (void)io;
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+        ImGui_ImplOpenGL3_Init("#version 130");
         
         float r = 0.0f;
         float increment = 0.05f;
+        bool show_demo_window = true;
+        bool show_another_window = false;
+        ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+        glm::vec3 translation(200,200,0);
+
         while (!glfwWindowShouldClose(window))
         {
             renderer.clear();
+            
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+            glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
+            glm::mat4 mvp = proj * view * model;
 
             shader.bind();
+            shader.setUniformMat4f("u_MVP", mvp);
+
             renderer.draw(va, ib, shader);
 
             if (r > 1.0f)
@@ -114,10 +137,22 @@ int main(void)
 
             r += increment;
 
+            {
+                static float f = 0.0f;
+                ImGui::SliderFloat3("Translation", &translation.x, 0.0f, 960.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+                ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+            }
+
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
     }
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
     glfwTerminate();
     return 0;
 }

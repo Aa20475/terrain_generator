@@ -12,8 +12,12 @@ include_directories(${VENDOR_PATH})
 
 file(GLOB SOURCES src/*.cpp)
 list(APPEND SOURCES ${VENDOR_PATH}/stb_image/stb_image.cpp)
-
 message(${SOURCES})
+
+#imgui
+file(GLOB IMGUI_SOURCES ${VENDOR_PATH}/imgui/*) 
+add_library("ImGui" STATIC ${IMGUI_SOURCES})
+target_include_directories("ImGui" PUBLIC ${IMGUI_PATH})
 
 # GLFW3
 include_directories(${DEPENDENCY_PATH}/GLFW/include)
@@ -34,6 +38,9 @@ include_directories(${OPENGL_INCLUDE_DIR})
 link_libraries(${OPENGL_LIBRARIES})
 
 add_executable(${EXEC} ${SOURCES})
+
+target_link_libraries(${EXEC} PUBLIC ImGui)
+
 
 # Copy the resource directory to binary directory
 add_custom_command(TARGET ${EXEC} POST_BUILD
