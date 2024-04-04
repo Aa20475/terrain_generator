@@ -8,10 +8,16 @@ set(DEPENDENCY_PATH ${CMAKE_CURRENT_SOURCE_DIR}/deps)
 set(VENDOR_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/vendor)
 
 include_directories(include)
+include_directories(src)
 include_directories(${VENDOR_PATH})
 
 file(GLOB SOURCES src/*.cpp)
 list(APPEND SOURCES ${VENDOR_PATH}/stb_image/stb_image.cpp)
+
+# Append the list of files matching src/tests/*.cpp to SOURCES
+file(GLOB TEST_SOURCES src/tests/*.cpp)
+list(APPEND SOURCES ${TEST_SOURCES})
+
 message(${SOURCES})
 
 #imgui
