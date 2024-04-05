@@ -21,6 +21,7 @@
 #include "imgui/imgui_impl_glfw.h"
 
 #include "tests/test_clear_color.h"
+#include "tests/test.h"
 
 int main(void)
 {
@@ -68,28 +69,38 @@ int main(void)
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
         ImGui_ImplOpenGL3_Init("#version 130");
 
-        test::TestClearColor test;
+        test::Test* currentTest = nullptr;
+        test::TestMenu* testMenu = new test::TestMenu(currentTest);
+        currentTest = testMenu;
+
+        testMenu->registerTest<test::TestClearColor>("Clear Color");
 
         while (!glfwWindowShouldClose(window))
         {
             renderer.clear();
-
-            test.onUpdate(0.0f);
-            test.onRender();
-
             
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
-
-            test.onImGuiRender();
-            
+            if(currentTest){
+                currentTest->onUpdate(0.0f);
+                currentTest->onRender();
+                ImGui::Begin("Test");
+                if(currentTest != testMenu && ImGui::Button("<-")){
+                    delete currentTest;
+                    currentTest = testMenu;
+                }
+                currentTest->onImGuiRender();
+                ImGui::End();
+            }
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
+        delete currentTest;
+        if(currentTest != testMenu)delete testMenu;
     }
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
