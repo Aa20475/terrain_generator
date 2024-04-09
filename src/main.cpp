@@ -22,6 +22,7 @@
 
 #include "tests/test_clear_color.h"
 #include "tests/test.h"
+#include "tests/test_texture_2d.h"
 
 int main(void)
 {
@@ -74,6 +75,7 @@ int main(void)
         currentTest = testMenu;
 
         testMenu->registerTest<test::TestClearColor>("Clear Color");
+        testMenu->registerTest<test::TestTexture2D>("Texture");
 
         while (!glfwWindowShouldClose(window))
         {
