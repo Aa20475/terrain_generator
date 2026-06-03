@@ -19,7 +19,7 @@ namespace test
         va.addBuffer(vb, layout);
 
         proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
-        view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
+        view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
         shader.bind();
         shader.setUniform1i("u_Texture", 0);
         texture.bind();

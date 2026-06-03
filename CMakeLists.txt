@@ -11,11 +11,11 @@ include_directories(include)
 include_directories(src)
 include_directories(${VENDOR_PATH})
 
-file(GLOB SOURCES src/*.cpp)
+file(GLOB SOURCES src/*.cpp src/*.h)
 list(APPEND SOURCES ${VENDOR_PATH}/stb_image/stb_image.cpp)
 
 # Append the list of files matching src/tests/*.cpp to SOURCES
-file(GLOB TEST_SOURCES src/tests/*.cpp)
+file(GLOB TEST_SOURCES src/tests/*.cpp src/tests/*.h)
 list(APPEND SOURCES ${TEST_SOURCES})
 
 message(${SOURCES})
